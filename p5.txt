@@ -128,17 +128,18 @@ Se ha capturado una sesión SIP (archivo sip.cap.gz), que se puede abrir con Wir
     tiempo real y H.261 con información sobre la decodificacíón del vídeo.
 
  ** ¿Cuál es el tamaño de paquete de los mismos?
-    -RTP: 214 bytes; H.261: tamaño variable, entre 200 y 1000 bytes (van partidos).
+    -RTP: 214 bytes; H.261: tamaño variable, entre 200 y 1000 bytes.
 
  ** ¿Se utilizan bits de padding?
     -No (Padding: False)
 
  ** ¿Cuál es la periodicidad de los paquetes que se envían?
-    -160 (Según la RFC de RTP, se incrementa en 160 "unidades" segun el tiempo de muestreo.)
-
+    -Según la RFC de RTP, se incrementa en 160 "unidades" segun el tiempo de muestreo;
+     Estamos enviando en cada paquete (160 * 8 = 1280 bits), y en un segundo caben 50 paquetes (64000 / 1280)
+    -->La periodicidad es de 20 ms
+    
  ** ¿Cuántos bits/segundo estamos enviando?
-    -15 KBytes/segundo de media (aproximadamente).
-
+    -64000 bits/segundo.
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
 
