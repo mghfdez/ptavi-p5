@@ -95,25 +95,49 @@ Se ha capturado una sesión SIP (archivo sip.cap.gz), que se puede abrir con Wir
 
 9. Fijémonos en las tramas siguientes a la número 46:
  ** ¿Se registra con éxito en el primer intento?
- ** ¿Cómo sabemos si el registro se ha realizado correctamente o no?
- ** ¿Podrías identificar las diferencias entre el primer intento y el segundo de registro? (fíjate en el tamaño de los paquetes y mira a qué se debe el cambio)
- ** ¿Cuánto es el valor del tiempo de expiración de la sesión? Indica las unidades.
+    -No
 
+ ** ¿Cómo sabemos si el registro se ha realizado correctamente o no?
+    -La respuesta que manda el servidor (Trama 50) contiene un mensaje de error "401 Unauthorized"
+
+ ** ¿Podrías identificar las diferencias entre el primer intento y el segundo de registro? (fíjate en el tamaño de los paquetes y mira a qué se debe el cambio)
+    -El paquete correspondiente al primer intento ocupa mas que el segundo (714 frente a 664 bytes)
+    -En el primer intento, se incluye un campo de autenticación que no se repite en el segundo intento.
+
+ ** ¿Cuánto es el valor del tiempo de expiración de la sesión? Indica las unidades.
+    -3600 segundos.
 
 10. Una vez registrados, podemos efectuar una llamada. Vamos a probar con el servicio de eco de Ekiga que nos permite comprobar si nos hemos conectado correctamente. El servicio de eco tiene la dirección sip:500@ekiga.net. Veamos el INVITE de cerca.
  ** ¿Puede verse el nombre del que efectúa la llamada, así como su dirección SIP?
- ** ¿Qué es lo que contiene el cuerpo de la trama? ¿En qué formato/protocolo está?
- ** ¿Tiene éxito el primer intento? ¿Cómo lo sabes?
- ** ¿En qué se diferencia el segundo INVITE más abajo del primero? ¿A qué crees que se debe esto?
+    -Si, en el campo "From" (sip:grex@ekiga.net)
 
+ ** ¿Qué es lo que contiene el cuerpo de la trama? ¿En qué formato/protocolo está?
+    -La descripción de la sesión (Protocolo SDP).
+
+ ** ¿Tiene éxito el primer intento? ¿Cómo lo sabes?
+    -No, porque se vuelve a enviar otro INVITE mas tarde con nuemro de secuencia 2 (trama 103).
+
+ ** ¿En qué se diferencia el segundo INVITE más abajo del primero? ¿A qué crees que se debe esto?
+    -El segundo INVITE contiene el campo "Proxy Authorization", esto porque el servidor no asiente el primer INVITE y manda
+    en su lugar un mensaje de error "407 Proxy Authentication Required"; para asegurarse de que no hay suplantación de identidad
+    al hacer la petición
 
 11. Una vez conectado, estudia el intercambio de tramas.
  ** ¿Qué protocolo(s) se utiliza(n)? ¿Para qué sirven estos protocolos?
- ** ¿Cuál es el tamaño de paquete de los mismos?
- ** ¿Se utilizan bits de padding?
- ** ¿Cuál es la periodicidad de los paquetes que se envían?
- ** ¿Cuántos bits/segundo estamos enviando?
+    Aparte de SIP, se utiliza: SDP para describir la sesión (codecs admitidos, etc); RTP para el intercambio de audio/video en
+    tiempo real y H.261 con información sobre la decodificacíón del vídeo.
 
+ ** ¿Cuál es el tamaño de paquete de los mismos?
+    -RTP: 214 bytes; H.261: tamaño variable, entre 200 y 1000 bytes (van partidos).
+
+ ** ¿Se utilizan bits de padding?
+    -No (Padding: False)
+
+ ** ¿Cuál es la periodicidad de los paquetes que se envían?
+    -160 (Según la RFC de RTP, se incrementa en 160 "unidades" segun el tiempo de muestreo.)
+
+ ** ¿Cuántos bits/segundo estamos enviando?
+    -15 KBytes/segundo de media (aproximadamente).
 
 
 [Al terminar el ejercicio es recomendable hacer commit de los ficheros modificados]
